@@ -17,16 +17,20 @@ class Piano():
         self.rect = self.image.get_rect(topleft=(x, y))
         self.anim_index = 0
         self.anim = "idle"
+        self.tocando = False
 
     # Desenha o piano
     def draw(self, screen, player):
         # verifica se o player esta tocando piano em cima do piano
         if self.rect.colliderect(player.rect) and player.anim == "piano-play":
             self.anim = "play"
-            musica.play()
+            if not self.tocando:
+                musica.play()
+                self.tocando = True
         else:
             self.anim = "idle"
             musica.stop()
+            self.tocando = False
 
         # aplica animação ao piano. idle = parado.
         if self.anim == "idle":
