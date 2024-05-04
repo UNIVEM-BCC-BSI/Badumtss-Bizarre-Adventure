@@ -1,6 +1,9 @@
 import pygame
 from math import floor
 
+pygame.mixer.init()
+musica = pygame.mixer.Sound('musicapiano.mp3')
+
 class Piano():
     # carregamento do piano.
     def __init__(self, x, y):
@@ -20,8 +23,10 @@ class Piano():
         # verifica se o player esta tocando piano em cima do piano
         if self.rect.colliderect(player.rect) and player.anim == "piano-play":
             self.anim = "play"
+            musica.play()
         else:
             self.anim = "idle"
+            musica.stop()
 
         # aplica animação ao piano. idle = parado.
         if self.anim == "idle":
