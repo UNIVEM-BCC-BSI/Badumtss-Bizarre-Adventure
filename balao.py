@@ -5,24 +5,33 @@ class Balao():
         self.x = x
         self.y = y
         self.text = text
-        self.key = key
         self.enabled = enabled
+        self.key = key
         self.antialias = antialias
+        self.color = color
+        self.bg = bg
         self.contador = 0
 
+        self.criar_texto()
+
+    def criar_texto(self):
         # Cria a fonte e o texto
         fonte_balao = pygame.font.Font(None, 35)
-        text_surface = fonte_balao.render(text, antialias, color)
+        text_surface = fonte_balao.render(self.text, self.antialias, self.color)
         text_rect = text_surface.get_rect()
         # Cria o fundo, tendo o tamanho do texto + 4px X e Y
-        self.image = pygame.Surface((text_rect.width+4, text_rect.height+4), pygame.SRCALPHA)
-        self.image.fill(bg) 
+        self.image = pygame.Surface((text_rect.width + 4, text_rect.height + 4), pygame.SRCALPHA)
+        self.image.fill(self.bg) 
         # Centraliza o texto no meio da caixa
         text_position = ((self.image.get_width() - text_surface.get_width()) // 2, (self.image.get_height() - text_surface.get_height()) // 2)
         # Insere o texto na caixa
         self.image.blit(text_surface, text_position)  
-        self.rect = self.image.get_rect(topleft=(x, y))
+        self.rect = self.image.get_rect(topleft=(self.x, self.y))
     
+    def alterar_texto(self, texto):
+        self.text = texto
+        self.criar_texto()
+
     def check_player(self, player):
         # Verfica se a tecla de interação está pressionada e se o player está no range.
         keys = pygame.key.get_pressed()

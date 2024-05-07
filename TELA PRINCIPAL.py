@@ -14,10 +14,7 @@ def alterarTelaJogo():
     global screen, tela
     pygame.display.set_mode((800, 600))
     tela = 4
-def alterarTelaJogo1():
-    global screen, tela
-    pygame.display.set_mode((800, 600))
-    tela = 5
+
 #TAMANHO TELA
 sw = 898
 sh = 897
@@ -74,12 +71,12 @@ notas = [Notas(600,450,20,20),
          ]
 #PENTAGRAMA
 penta = pygame.image.load('img/penta2.png')
-penta = pygame.transform.scale(penta, (600,400))
+penta = pygame.transform.scale(penta, (600, 400))
 nota = pygame.image.load('img/minima.png')
-nota = pygame.transform.scale(nota,(30,30))
+nota = pygame.transform.scale(nota, (30, 30))
 
 
-balao = Balao(400, 400, "Texto")
+balao = Balao(400, 400, "Texto", key=pygame.K_q)
 
 
 # Quarto
@@ -87,14 +84,14 @@ quarto = pygame.image.load('Sprites/quarto/quarto2.png')
 piano = Piano(300,316)
 tocador = True
 while run:
-    if tela == 5:
+    if tela == 4:
         screen.blit(quarto, (0, 0))
-        screen.blit(penta,(-150,-100))
+        screen.blit(penta,(-150, -100))
         piano.draw(screen, player)
         player.draw(screen, obstaculos)
+        
         for n in notas:
-            n.draw(screen)
-            
+            n.draw(screen)           
             if n.colisao(player):
                 notas.remove(n)
                 score+=1
@@ -107,12 +104,13 @@ while run:
                     re.play()
                 if score == 4:
                     si.play()
+
         balao.draw(screen)
         if balao.check_player(player): 
             if balao.getContador() == 0:
                 print("Playerasjalsja")
             else:
-                print("200")
+                balao.alterar_texto("obaaaaaaaaa")
             balao.addContador() 
             
         if score == 1:
@@ -129,14 +127,6 @@ while run:
             screen.blit(nota, (90,75))
             screen.blit(nota, (120,60))
             screen.blit(nota, (150,75))
-
-
-    if tela == 4:
-        screen.blit(quarto, (0, 0))
-        piano.draw(screen, player)
-        player.draw(screen, obstaculos)
-        for n in obstaculos:
-            n.draw(screen)
 
     if tela == 3:
         screen.blit(difi,(-2,-2))
@@ -155,7 +145,7 @@ while run:
             #pygame.mouse.set_visible(False)
             if event.type == ti:
                 pygame.mixer.music.pause()
-                alterarTelaJogo1()
+                alterarTelaJogo()
 
         if medio.cc():
  
