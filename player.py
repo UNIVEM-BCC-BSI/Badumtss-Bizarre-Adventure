@@ -3,7 +3,7 @@ from math import floor
 
 pygame.mixer.init()
 
-pulo = pygame.mixer.Sound('pulo.mp3')
+pulo = pygame.mixer.Sound('musicas/sons/pulo.mp3')
 pulo.set_volume(0.3)
 
 CHAO = 530

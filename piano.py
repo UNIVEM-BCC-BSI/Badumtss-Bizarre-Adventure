@@ -2,7 +2,7 @@ import pygame
 from math import floor
 
 pygame.mixer.init()
-musica = pygame.mixer.Sound('musicapiano.mp3')
+musica = pygame.mixer.Sound('musicas/musicapiano.mp3')
 
 class Piano():
     # carregamento do piano.

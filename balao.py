@@ -1,11 +1,5 @@
 import pygame
 
-'''
-balao = Balao(400, 400, "Texto")
-balao.draw(screen)
-if balao.check_player(player): print("Playerasjalsja")
-'''
-
 class Balao():
     def __init__(self, x, y, text, enabled=True, key=pygame.K_e, antialias=True, color="white", bg=(0, 0, 0, 128)):
         self.x = x
@@ -13,6 +7,8 @@ class Balao():
         self.text = text
         self.key = key
         self.enabled = enabled
+        self.antialias = antialias
+        self.contador = 0
 
         # Cria a fonte e o texto
         fonte_balao = pygame.font.Font(None, 35)
@@ -34,6 +30,12 @@ class Balao():
             return True
         else:
             return False
+        
+    def addContador(self):
+        self.contador += 1
+    
+    def getContador(self):
+        return self.contador
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
