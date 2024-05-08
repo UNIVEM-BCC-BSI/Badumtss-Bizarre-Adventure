@@ -5,7 +5,7 @@ from obstaculos import Obstaculo
 from piano import Piano
 from notas import Notas
 from balao import Balao
-a
+as
 score = 0
 
 pygame.init()
