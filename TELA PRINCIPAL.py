@@ -5,9 +5,9 @@ from obstaculos import Obstaculo
 from piano import Piano
 from notas import Notas
 from balao import Balao
-as
-score = 0
 
+score = 0
+nwe = 0
 pygame.init()
 
 def alterarTelaJogo():
