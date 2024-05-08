@@ -40,40 +40,49 @@ class Player():
         self.gravity = 0
         self.speed = 2
         self.obstaculo = 0
+        self.em_obstaculo = False
 
     def applyGravity(self, obstaculos):
-        # Mantem o valor da gravidade no padrão - 20
-        if self.gravity < 20: 
+        # Mantem o valor da gravidade no padrão: 20
+        if self.jumping and self.gravity < 20:
             self.gravity += 1
-        # Caso não esteja durante o pulo
-        else: 
+
+        # Caso não esteja durante o pulo e não está em contato com um obstáculo
+        else:
             if self.anim in ["jump-left", "jump-right"]:
                 self.anim = "idle"
                 self.jumping = False
-                print("a")
-        
-        if (self.jumping or self.rect.midbottom[1] < CHAO and self.obstaculo == 0) or self.rect.midbottom[1] < obstaculos[self.obstaculo].rect.top:
-            self.rect.y += self.gravity  
-            if self.anim == "jump-left" or self.anim == "left": 
+                self.em_obstaculo = False
+
+        # Se o jogador estiver pulando ou não estiver em contato com um obstáculo
+        if self.jumping or (self.rect.midbottom[1] < CHAO and not self.em_obstaculo):
+            self.rect.y += self.gravity
+
+            if self.anim == "jump-left" or self.anim == "left":
                 self.anim = "jump-left"
             else:
-                self.anim = "jump-right"         
-            
+                self.anim = "jump-right"
+
             if self.obstaculo == 0:
                 for pos, obstaculo in enumerate(obstaculos):
-                    if self.rect.colliderect(obstaculo.rect):#if self.rect.collidelistall(obstaculos):
-                        self.rect.bottom = obstaculo.rect.top - 1
+                    if self.rect.colliderect(obstaculo.rect):
+                        self.rect.bottom = obstaculo.rect.top
                         self.anim = "idle"
                         self.jumping = False
                         self.obstaculo = pos
+                        self.em_obstaculo = True
                         print("obstaculo")
+                        break 
 
-            if self.rect.midbottom[1] > CHAO: 
+            if self.rect.midbottom[1] > CHAO:
                 self.rect.y = 357
-        
-        if self.obstaculo != 0:
-            if self.rect.bottom != obstaculos[self.obstaculo].rect.top - 1:
+
+        # Reinicia o índice do obstáculo se não houver mais colisão
+        if self.em_obstaculo:
+            if not self.rect.colliderect(obstaculos[self.obstaculo].rect):
                 self.obstaculo = 0
+                self.em_obstaculo = False
+
 
     def getImage(self):
         if self.anim == "idle":
@@ -128,8 +137,6 @@ class Player():
             if not self.jumping:
                 self.gravity = -20
                 self.jumping = True
-                self.obstaculo = 0
-                print("pular")
                 pulo.play()
 
         if keys[pygame.K_a]:
