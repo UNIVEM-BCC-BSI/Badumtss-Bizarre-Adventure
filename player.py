@@ -36,26 +36,42 @@ class Player():
         self.anim_index = 0
 
         self.andando = "idle"
+        self.jumping = False
         self.gravity = 0
         self.speed = 2
+        self.obstaculo = False
 
     def applyGravity(self, obstaculos):
-        if self.gravity < 20: self.gravity += 1
+        # Mantem o valor da gravidade no padrão - 20
+        if self.gravity < 19: 
+            self.gravity += 1
+        # Caso não esteja durante o pulo
         else: 
             if self.anim in ["jump-left", "jump-right"]:
                 self.anim = "idle"
-
-        (xant, yant) = (self.rect.left, self.rect.top)
-        if self.rect.midbottom[1] < CHAO or self.gravity < 0:
+                self.jumping = False
+        
+        if self.jumping or self.gravity < 0 and not self.obstaculo: #         
             self.rect.y += self.gravity  
             if self.anim == "jump-left" or self.anim == "left": 
                 self.anim = "jump-left"
             else:
-                self.anim = "jump-right"         
-            
-            if self.rect.collidelistall(obstaculos):
-                self.anim = "idle"
-                self.rect.left, self.rect.top = xant, yant
+                self.anim = "jump-right"       
+            print("Aplicando pulo")           
+        
+        (xant, yant) = (self.rect.left, self.rect.top)
+        if self.rect.collidelistall(obstaculos) and self.jumping:
+            self.anim = "idle"
+            self.jumping = False
+            self.obstaculo = True
+            self.rect.left, self.rect.top = xant, yant
+            print("Em obstaculo")
+
+        if not self.jumping and not self.obstaculo and self.rect.midbottom[1] < CHAO:
+            print("Corrigindo")
+            self.rect.y += self.gravity 
+            if self.rect.midbottom[1] > CHAO: 
+                self.rect.y = 357
                 
 
     def getImage(self):
@@ -108,25 +124,28 @@ class Player():
     def readkeys(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
-            if self.rect.midbottom[1] >= CHAO:
+            if not self.jumping:
                 self.gravity = -20
+                self.jumping = True
+                self.obstaculo = False
+                print("Falso")
                 pulo.play()
 
         if keys[pygame.K_a]:
-            if self.gravity > 19: self.anim = "left"
+            if not self.jumping: self.anim = "left"
             self.andando = "left"
 
         if keys[pygame.K_d]:
-            if self.gravity > 19: self.anim = "right"
+            if not self.jumping: self.anim = "right"
             self.andando = "right"
 
         if keys[pygame.K_e]:
-            if self.gravity > 19 and (self.rect.left > 230 and self.rect.right < 580):
+            if not self.jumping and (self.rect.left > 230 and self.rect.right < 580):
                 self.anim = "piano-play"
                 self.andando = "idle"
 
-        if not keys[pygame.K_d] and not keys[pygame.K_a] and not keys[pygame.K_e]:
-            if self.gravity > 19: self.anim = "idle"
+        if not keys[pygame.K_d] and not keys[pygame.K_a] and not keys[pygame.K_e] and self.andando != "idle" and not self.jumping:
+            if not self.jumping: self.anim = "idle"
             self.andando = "idle"
             self.speed = 2
 

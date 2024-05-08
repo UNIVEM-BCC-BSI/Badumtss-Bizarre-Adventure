@@ -62,8 +62,8 @@ pygame.time.set_timer(ti, 30)
 player = Player()
 
 # OBSTACULOS
-obstaculos = [#Obstaculo(600, 400, 40, 150)]
-]
+obstaculos = [Obstaculo(600, 400, 40, 150)]
+
 notas = [Notas(600,450,20,20),
          Notas(500,450,20,20),
          Notas(400,450,20,20),
@@ -90,6 +90,9 @@ while run:
         piano.draw(screen, player)
         player.draw(screen, obstaculos)
         
+        for n in obstaculos:
+            n.draw(screen)
+
         for n in notas:
             n.draw(screen)           
             if n.colisao(player):
