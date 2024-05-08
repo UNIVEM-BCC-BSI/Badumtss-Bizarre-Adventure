@@ -9,7 +9,6 @@ class Bott:
         self.draw(screen)
 
     def draw(self, screen):
-
         if self.enabled:
             if self.cc():
                 bt = pygame.image.load(self.nome_esc)

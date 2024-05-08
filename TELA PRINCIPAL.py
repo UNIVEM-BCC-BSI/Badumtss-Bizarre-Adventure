@@ -7,7 +7,7 @@ from notas import Notas
 from balao import Balao
 
 score = 0
-nwe = 0
+
 pygame.init()
 
 def alterarTelaJogo():
@@ -62,7 +62,7 @@ pygame.time.set_timer(ti, 30)
 player = Player()
 
 # OBSTACULOS
-obstaculos = [Obstaculo(600, 400, 40, 150)]
+obstaculos = [Obstaculo(300, 400, 40, 150), Obstaculo(500, 350, 40, 150)]
 
 notas = [Notas(600,450,20,20),
          Notas(500,450,20,20),
@@ -75,9 +75,8 @@ penta = pygame.transform.scale(penta, (600, 400))
 nota = pygame.image.load('img/minima.png')
 nota = pygame.transform.scale(nota, (30, 30))
 
-
+# Balão de texto
 balao = Balao(400, 400, "Texto", key=pygame.K_q)
-
 
 # Quarto
 quarto = pygame.image.load('Sprites/quarto/quarto2.png')
