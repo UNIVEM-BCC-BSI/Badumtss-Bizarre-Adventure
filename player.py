@@ -79,7 +79,9 @@ class Player():
 
         # Reinicia o índice do obstáculo se não houver mais colisão
         if self.em_obstaculo:
-            if not self.rect.colliderect(obstaculos[self.obstaculo].rect):
+            lista = list(range(obstaculos[self.obstaculo].rect.topleft[0], obstaculos[self.obstaculo].rect.topright[0]))
+            if self.rect.bottomleft[0] + 1 not in lista and self.rect.bottomright[0] + 1 not in lista: 
+                print("zerado")
                 self.obstaculo = 0
                 self.em_obstaculo = False
 
