@@ -71,7 +71,7 @@ class Player():
                         self.jumping = False
                         self.obstaculo = pos
                         self.em_obstaculo = True
-                        print("obstaculo")
+                        self.gravity = 0
                         break 
 
             if self.rect.midbottom[1] > CHAO:
@@ -81,9 +81,9 @@ class Player():
         if self.em_obstaculo:
             lista = list(range(obstaculos[self.obstaculo].rect.topleft[0], obstaculos[self.obstaculo].rect.topright[0]))
             if self.rect.bottomleft[0] + 1 not in lista and self.rect.bottomright[0] + 1 not in lista: 
-                print("zerado")
                 self.obstaculo = 0
                 self.em_obstaculo = False
+                self.jumping = True
 
 
     def getImage(self):
