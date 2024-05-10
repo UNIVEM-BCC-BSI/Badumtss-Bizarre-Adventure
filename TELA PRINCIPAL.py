@@ -13,13 +13,16 @@ pygame.init()
 def alterarTelaJogo():
     global screen, tela
     pygame.display.set_mode((800, 600))
-    tela = 4
+    tela = 5
 
 #TAMANHO TELA
 sw = 898
-sh = 897
+sh = 897#600
 screen = pygame.display.set_mode((sw,sh))
 clock = pygame.time.Clock()
+
+# FASES
+FASE_1 = 5
 
 #ICONE
 icon = pygame.image.load('Sprites/Badumtss/jump.png')
@@ -42,12 +45,10 @@ mb.set_volume(0.5)
 toca = True
 
 #VARIAVEIS
-
 cj = False
 
 #NOME DA ABA
 pygame.display.set_caption('Badumtss Bizarre Adventure')
-
 
 #FUNDO
 fundo = pygame.image.load('img/telaprincipal.png')
@@ -80,9 +81,18 @@ balao = Balao(400, 400, "Texto", key=pygame.K_q)
 
 # Quarto
 quarto = pygame.image.load('Sprites/quarto/quarto2.png')
-piano = Piano(300,316)
+piano = Piano(300, 316)
 tocador = True
+
+# Fase 1
+fase1_bg = pygame.image.load('Sprites/fase1/fase1-fundo.png')
+
 while run:
+    if tela == FASE_1:
+        screen.blit(fase1_bg, (0, 0))
+        player.size = 1
+        player.draw(screen, obstaculos)
+
     if tela == 4:
         screen.blit(quarto, (0, 0))
         screen.blit(penta,(-150, -100))
