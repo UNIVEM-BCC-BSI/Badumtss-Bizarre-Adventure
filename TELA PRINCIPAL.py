@@ -10,14 +10,24 @@ score = 0
 
 pygame.init()
 
-def alterarTelaJogo():
-    global screen, tela
+def alterarTelaJogo(telaj):
+    global screen, tela, obstaculos, player
     pygame.display.set_mode((800, 600))
-    tela = 4
+    if telaj == 4: 
+        tela = 4
+    elif telaj == 5:
+        tela = 5  
+        player.alterar_tamanho(1, (733, 397))
+        obstaculos = [Obstaculo(30, 462, "Sprites/fase1/plat1.png"), Obstaculo(66, 360, "Sprites/fase1/plat1.png"),
+                      Obstaculo(672, 398, "Sprites/fase1/c12.png"),
+                      Obstaculo(616, 495, "Sprites/fase1/c11.png"),
+                      Obstaculo(561, 514, "Sprites/fase1/c10.png"),
+                      Obstaculo(499, 544, "Sprites/fase1/c9.png"),
+                      Obstaculo(664, 151, "Sprites/fase1/c13.png", True)]
 
 #TAMANHO TELA
 sw = 898
-sh = 897#600
+sh = 600#897
 screen = pygame.display.set_mode((sw,sh))
 clock = pygame.time.Clock()
 
@@ -63,13 +73,14 @@ pygame.time.set_timer(ti, 30)
 player = Player()
 
 # OBSTACULOS
-obstaculos = [Obstaculo(300, 400, 40, 150), Obstaculo(500, 350, 40, 150)]
+obstaculos = []
 
-notas = [Notas(600,450,20,20),
+notas = []
+'''[Notas(600,450,20,20),
          Notas(500,450,20,20),
          Notas(400,450,20,20),
          Notas(300,450,20,20)
-         ]
+         ]'''
 #PENTAGRAMA
 penta = pygame.image.load('img/penta2.png')
 penta = pygame.transform.scale(penta, (500, 300))
@@ -77,12 +88,12 @@ nota = pygame.image.load('img/minima.png')
 nota = pygame.transform.scale(nota, (30, 30))
 
 # Balão de texto
-balao = Balao(400, 400, "Texto", key=pygame.K_q)
+# balao = Balao(400, 400, "Texto", key=pygame.K_q)
 
 # Quarto
 quarto = pygame.image.load('Sprites/quarto/quarto2.png')
 piano = Piano(300, 316)
-portal = Portal(600,300)
+portal = Portal(200,300)
 tocador = True
 
 # Fase 1
@@ -92,9 +103,10 @@ while run:
     if tela == FASE_1:
         screen.blit(fase1_bg, (0, 0))
         screen.blit(penta,(-130, -100))
-        player.size = 1
         player.draw(screen, obstaculos)
-        player.rect.midbottom = (140,680)
+
+        for n in obstaculos:
+            n.draw(screen)
 
     if tela == 4:
         screen.blit(quarto, (0, 0))
@@ -102,9 +114,9 @@ while run:
         piano.draw(screen, player)
         player.draw(screen, obstaculos)
         portal.draw(screen, player)
+        
         if portal.cont != 0:
-            print('alo')
-            tela = FASE_1
+            alterarTelaJogo(5)
         for n in obstaculos:
             n.draw(screen)
 
@@ -123,13 +135,13 @@ while run:
                 if score == 4:
                     si.play()
 
-        balao.draw(screen)
+        '''balao.draw(screen)
         if balao.check_player(player): 
             if balao.getContador() == 0:
                 print("Playerasjalsja")
             else:
                 balao.alterar_texto("obaaaaaaaaa")
-            balao.addContador() 
+            balao.addContador()''' 
             
         if score == 1:
             screen.blit(nota, (60,90))
@@ -163,7 +175,7 @@ while run:
             #pygame.mouse.set_visible(False)
             if event.type == ti:
                 pygame.mixer.music.pause()
-                alterarTelaJogo()
+                alterarTelaJogo(4)
 
         if medio.cc():
  
@@ -171,14 +183,14 @@ while run:
             #pygame.mouse.set_visible(False)
             if event.type == ti:
                 pygame.mixer.music.pause()
-                alterarTelaJogo()
+                alterarTelaJogo(4)
 
         if facil.cc():
  
             #pygame.mouse.set_visible(False)
             if event.type == ti:
                 pygame.mixer.music.pause()
-                alterarTelaJogo()
+                alterarTelaJogo(4)
 
     if tela == 1:
         screen.blit(fundo, (0, 0))
@@ -214,6 +226,9 @@ while run:
             run = False
 
         player.readkeys()
+
+    if pygame.mouse.get_pressed()[0] and tela > 4:
+        print(pygame.mouse.get_pos())
 
     pygame.display.update()
     clock.tick(60)

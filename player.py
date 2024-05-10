@@ -73,8 +73,11 @@ class Player():
                 self.jumping = False
                 self.em_obstaculo = False
 
+        if not self.jumping and self.size == SIZE_PEQUENO and self.gravity < 0:
+            self.gravity = 10
+
         # Se o jogador estiver pulando ou não estiver em contato com um obstáculo
-        if self.jumping or (self.rect.midbottom[1] < CHAO and not self.em_obstaculo):
+        if self.jumping or (self.rect.midbottom[1] < CHAO and not self.em_obstaculo and self.size == SIZE_GRANDE) or (self.size == SIZE_PEQUENO and not self.em_obstaculo):
             self.rect.y += self.gravity
 
             if self.anim == "jump-left" or self.anim == "left":
@@ -82,18 +85,23 @@ class Player():
             else:
                 self.anim = "jump-right"
 
-            if self.obstaculo == 0:
+            if not self.em_obstaculo:
                 for pos, obstaculo in enumerate(obstaculos):
                     if self.rect.colliderect(obstaculo.rect):
-                        self.rect.bottom = obstaculo.rect.top
-                        self.anim = "idle"
-                        self.jumping = False
-                        self.obstaculo = pos
-                        self.em_obstaculo = True
-                        self.gravity = 0
+                        if not obstaculo.chao and self.rect.bottom > obstaculo.rect.top: 
+                            self.rect.bottom = obstaculo.rect.top
+                            self.em_obstaculo = True
+                            self.obstaculo = pos
+                            self.gravity = 0
+                            self.anim = "idle"
+                            self.jumping = False
+                        else: 
+                            self.rect.top = obstaculo.rect.bottom + 1
+                            self.gravity = 1
+                        
                         break 
 
-            if self.rect.midbottom[1] > CHAO:
+            if self.rect.midbottom[1] > CHAO and self.size == SIZE_GRANDE:
                 self.rect.y = 357
 
         # Reinicia o índice do obstáculo se não houver mais colisão
@@ -132,17 +140,21 @@ class Player():
         elif self.anim == "jump-left":
             self.image = pygame.transform.flip(self.images[self.size][JUMP_INDEX], True, False)
 
+        self.rect = self.image.get_rect(x=self.rect.x, y=self.rect.y)
 
 
     def andar(self, obstaculos):
         (xant, yant) = (self.rect.left, self.rect.top)
              
-        if self.speed < 5:
+        if self.speed < 5 and self.size == SIZE_GRANDE:
+            self.speed += 1
+
+        elif self.speed < 2 and self.size == SIZE_PEQUENO:
             self.speed += 1
 
         if self.andando == "right":
             if self.rect.right > 800:
-                self.rect.x -= self.speed
+                self.rect.x -= self.speed  
             self.rect.x += self.speed
 
         elif self.andando == "left":
@@ -158,6 +170,7 @@ class Player():
             if not self.jumping:
                 self.gravity = -20
                 self.jumping = True
+                self.em_obstaculo = False
                 pulo.play()
 
         if keys[pygame.K_a]:
@@ -177,6 +190,12 @@ class Player():
             if not self.jumping: self.anim = "idle"
             self.andando = "idle"
             self.speed = 2
+
+    def alterar_tamanho(self, tamanho, xy):
+        self.size = tamanho
+        self.rect = self.image.get_rect(x=xy[0], y=xy[1])
+        self.andando = "idle"
+        self.anim = "idle"
 
     def draw(self, screen, obstaculos):
         self.getImage()
