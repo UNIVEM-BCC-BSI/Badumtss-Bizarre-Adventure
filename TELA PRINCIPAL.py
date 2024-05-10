@@ -5,7 +5,7 @@ from obstaculos import Obstaculo
 from piano import Piano
 from notas import Notas
 from balao import Balao
-
+from portal import Portal
 score = 0
 
 pygame.init()
@@ -13,7 +13,7 @@ pygame.init()
 def alterarTelaJogo():
     global screen, tela
     pygame.display.set_mode((800, 600))
-    tela = 5
+    tela = 4
 
 #TAMANHO TELA
 sw = 898
@@ -40,8 +40,8 @@ la = pygame.mixer.Sound('musicas/sons/la.mp3')
 si = pygame.mixer.Sound('musicas/sons/si.mp3')
 pygame.mixer.music.load('musicas/MUSICA.mp3')
 pygame.mixer.music.play()
-pygame.mixer.music.set_volume(0.5)
-mb.set_volume(0.5)
+pygame.mixer.music.set_volume(0.1)
+mb.set_volume(0.1)
 toca = True
 
 #VARIAVEIS
@@ -72,7 +72,7 @@ notas = [Notas(600,450,20,20),
          ]
 #PENTAGRAMA
 penta = pygame.image.load('img/penta2.png')
-penta = pygame.transform.scale(penta, (600, 400))
+penta = pygame.transform.scale(penta, (500, 300))
 nota = pygame.image.load('img/minima.png')
 nota = pygame.transform.scale(nota, (30, 30))
 
@@ -82,6 +82,7 @@ balao = Balao(400, 400, "Texto", key=pygame.K_q)
 # Quarto
 quarto = pygame.image.load('Sprites/quarto/quarto2.png')
 piano = Piano(300, 316)
+portal = Portal(600,300)
 tocador = True
 
 # Fase 1
@@ -90,15 +91,20 @@ fase1_bg = pygame.image.load('Sprites/fase1/fase1-fundo.png')
 while run:
     if tela == FASE_1:
         screen.blit(fase1_bg, (0, 0))
+        screen.blit(penta,(-130, -100))
         player.size = 1
         player.draw(screen, obstaculos)
+        player.rect.midbottom = (140,680)
 
     if tela == 4:
         screen.blit(quarto, (0, 0))
         screen.blit(penta,(-150, -100))
         piano.draw(screen, player)
         player.draw(screen, obstaculos)
-        
+        portal.draw(screen, player)
+        if portal.cont != 0:
+            print('alo')
+            tela = FASE_1
         for n in obstaculos:
             n.draw(screen)
 
