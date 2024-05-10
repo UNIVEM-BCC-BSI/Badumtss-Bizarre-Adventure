@@ -7,33 +7,52 @@ pulo = pygame.mixer.Sound('musicas/sons/pulo.mp3')
 pulo.set_volume(0.3)
 
 CHAO = 530
+
+# Index de animações
 JUMP_INDEX = 1
 IDLE_INDEX = 0
 RUN_INDEX = 2
 PIANO_P_INDEX = 3
+
+SIZE_GRANDE = 0
+SIZE_PEQUENO = 1
 class Player():
     def __init__(self):
-        self.images = [[pygame.image.load('Sprites/Badumtss/idle/idle_1.png').convert_alpha(),
-                        pygame.image.load('Sprites/Badumtss/idle/idle_2.png').convert_alpha(),
-                        pygame.image.load('Sprites/Badumtss/idle/idle_3.png').convert_alpha(),
-                        pygame.image.load('Sprites/Badumtss/idle/idle_4.png').convert_alpha(),
-                        pygame.image.load('Sprites/Badumtss/idle/idle_5.png').convert_alpha(),
+        self.images = [ # SIZE_GRANDE
+                        [[pygame.image.load('Sprites/Badumtss/idle/idle_1.png').convert_alpha(), # idle
+                        pygame.image.load('Sprites/Badumtss/idle/idle_2.png').convert_alpha(), # idle
+                        pygame.image.load('Sprites/Badumtss/idle/idle_3.png').convert_alpha(), # idle
+                        pygame.image.load('Sprites/Badumtss/idle/idle_4.png').convert_alpha(), # idle
+                        pygame.image.load('Sprites/Badumtss/idle/idle_5.png').convert_alpha(), # idle
                         pygame.image.load('Sprites/Badumtss/idle/idle_6.png').convert_alpha()], # idle
-                       pygame.image.load('Sprites/Badumtss/jump.png').convert_alpha(), # pulo 
-                        [pygame.image.load('Sprites/Badumtss/run/run_1.png').convert_alpha(),
-                         pygame.image.load('Sprites/Badumtss/run/run_2.png').convert_alpha(),
-                         pygame.image.load('Sprites/Badumtss/run/run_3.png').convert_alpha()],
-                        [pygame.image.load('Sprites/Badumtss/piano/pianoplay_1.png').convert_alpha(),
-                         pygame.image.load('Sprites/Badumtss/piano/pianoplay_2.png').convert_alpha(),
-                         pygame.image.load('Sprites/Badumtss/piano/pianoplay_3.png').convert_alpha(),
-                         pygame.image.load('Sprites/Badumtss/piano/pianoplay_4.png').convert_alpha()]] # andar
+                        pygame.image.load('Sprites/Badumtss/jump.png').convert_alpha(), # pulo 
+                        [pygame.image.load('Sprites/Badumtss/run/run_1.png').convert_alpha(), # andar
+                         pygame.image.load('Sprites/Badumtss/run/run_2.png').convert_alpha(), # andar
+                         pygame.image.load('Sprites/Badumtss/run/run_3.png').convert_alpha()], # andar
+                        [pygame.image.load('Sprites/Badumtss/piano/pianoplay_1.png').convert_alpha(), # piano
+                         pygame.image.load('Sprites/Badumtss/piano/pianoplay_2.png').convert_alpha(), # piano
+                         pygame.image.load('Sprites/Badumtss/piano/pianoplay_3.png').convert_alpha(), # piano
+                         pygame.image.load('Sprites/Badumtss/piano/pianoplay_4.png').convert_alpha()]], 
+                        
+                        # SIZE_PEQUENO
+                        [[pygame.image.load('Sprites/Badumtss-menor/idle/idle_1.png').convert_alpha(), # idle
+                        pygame.image.load('Sprites/Badumtss-menor/idle/idle_2.png').convert_alpha(), # idle
+                        pygame.image.load('Sprites/Badumtss-menor/idle/idle_3.png').convert_alpha(), # idle
+                        pygame.image.load('Sprites/Badumtss-menor/idle/idle_4.png').convert_alpha(), # idle
+                        pygame.image.load('Sprites/Badumtss-menor/idle/idle_5.png').convert_alpha(), # idle
+                        pygame.image.load('Sprites/Badumtss-menor/idle/idle_6.png').convert_alpha()], # idle
+                        pygame.image.load('Sprites/Badumtss-menor/jump.png').convert_alpha(), # pulo 
+                        [pygame.image.load('Sprites/Badumtss-menor/run/run_1.png').convert_alpha(), # andar
+                         pygame.image.load('Sprites/Badumtss-menor/run/run_2.png').convert_alpha(), # andar
+                         pygame.image.load('Sprites/Badumtss-menor/run/run_3.png').convert_alpha()]]] 
 
-        self.image = self.images[IDLE_INDEX][0]
+        self.image = self.images[SIZE_GRANDE][IDLE_INDEX][0]
         self.rect = self.image.get_rect(midbottom=(80, CHAO))
-        
+
         # animação
         self.anim = "idle"
         self.anim_index = 0
+        self.size = SIZE_GRANDE
 
         self.andando = "idle"
         self.jumping = False
@@ -90,28 +109,28 @@ class Player():
         if self.anim == "idle":
             self.anim_index += 0.1
             if self.anim_index > 5: self.anim_index = 0
-            self.image = self.images[IDLE_INDEX][floor(self.anim_index)]
+            self.image = self.images[self.size][IDLE_INDEX][floor(self.anim_index)]
 
         elif self.anim == "piano-play":
             self.anim_index += 0.1
             if self.anim_index > 3: self.anim_index = 0
-            self.image = self.images[PIANO_P_INDEX][floor(self.anim_index)]
+            self.image = self.images[self.size][PIANO_P_INDEX][floor(self.anim_index)]
 
         elif self.anim == "left":
             self.anim_index += 0.1
             if self.anim_index > 2: self.anim_index = 0
-            self.image = pygame.transform.flip(self.images[RUN_INDEX][floor(self.anim_index)], True, False)
+            self.image = pygame.transform.flip(self.images[self.size][RUN_INDEX][floor(self.anim_index)], True, False)
 
         elif self.anim == "right":
             self.anim_index += 0.1
             if self.anim_index > 2: self.anim_index = 0
-            self.image = self.images[RUN_INDEX][floor(self.anim_index)]
+            self.image = self.images[self.size][RUN_INDEX][floor(self.anim_index)]
 
         elif self.anim == "jump-right":
-            self.image = self.images[JUMP_INDEX]
+            self.image = self.images[self.size][JUMP_INDEX]
 
         elif self.anim == "jump-left":
-            self.image = pygame.transform.flip(self.images[JUMP_INDEX], True, False)
+            self.image = pygame.transform.flip(self.images[self.size][JUMP_INDEX], True, False)
 
 
 
