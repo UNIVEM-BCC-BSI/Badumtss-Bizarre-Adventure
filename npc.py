@@ -8,12 +8,12 @@ class Npc():
         self.cont = 0
         self.y = y
         self.x = x
-        self.images = [pygame.image.load('Sprites/npcs/beethoven_1.png'),
-                       pygame.image.load('Sprites/npcs/beethoven_2.png'),
-                        pygame.image.load('Sprites/npcs/beethoven_3.png'),
-                        pygame.image.load('Sprites/npcs/beethoven_4.png'),
-                        pygame.image.load('Sprites/npcs/beethoven_5.png'),
-                        pygame.image.load('Sprites/npcs/beethoven_6.png'),]
+        self.images = [pygame.image.load('Sprites/npcs/avo/avo_1.png'),
+                       pygame.image.load('Sprites/npcs/avo/avo_2.png'),
+                        pygame.image.load('Sprites/npcs/avo/avo_3.png'),
+                        pygame.image.load('Sprites/npcs/avo/avo_4.png'),
+                        pygame.image.load('Sprites/npcs/avo/avo_5.png'),
+                        pygame.image.load('Sprites/npcs/avo/avo_6.png')]
         
         self.image = self.images[0]
         self.rect = self.image.get_rect(topleft=(x, y))

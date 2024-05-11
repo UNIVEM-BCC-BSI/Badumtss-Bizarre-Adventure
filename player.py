@@ -60,6 +60,7 @@ class Player():
         self.speed = 2
         self.obstaculo = 0
         self.em_obstaculo = False
+        self.notas = 0
 
     def applyGravity(self, obstaculos):
         # Mantem o valor da gravidade no padrão: 20
@@ -82,13 +83,13 @@ class Player():
 
             if self.anim == "jump-left" or self.anim == "left":
                 self.anim = "jump-left"
-            else:
+            elif self.anim == "jump-right" or self.anim == "right":
                 self.anim = "jump-right"
 
             if not self.em_obstaculo:
                 for pos, obstaculo in enumerate(obstaculos):
                     if self.rect.colliderect(obstaculo.rect):
-                        if not obstaculo.chao and self.rect.bottom > obstaculo.rect.top: 
+                        if self.rect.bottom >= obstaculo.rect.top: 
                             self.rect.bottom = obstaculo.rect.top
                             self.em_obstaculo = True
                             self.obstaculo = pos
@@ -182,11 +183,12 @@ class Player():
             self.andando = "right"
 
         if keys[pygame.K_e]:
-            if not self.jumping and (self.rect.left > 230 and self.rect.right < 580):
+            if not self.jumping and self.anim != "piano-play" and (self.rect.left > 230 and self.rect.right < 580) and self.notas == 7:
                 self.anim = "piano-play"
                 self.andando = "idle"
+                
 
-        if not keys[pygame.K_d] and not keys[pygame.K_a] and not keys[pygame.K_e] and self.andando != "idle" and not self.jumping:
+        if not keys[pygame.K_d] and not keys[pygame.K_a] and not keys[pygame.K_e] and not self.jumping:
             if not self.jumping: self.anim = "idle"
             self.andando = "idle"
             self.speed = 2
@@ -197,7 +199,8 @@ class Player():
         self.andando = "idle"
         self.anim = "idle"
 
-    def draw(self, screen, obstaculos):
+    def draw(self, screen, obstaculos, PLAYER_NOTAS):
+        self.notas = PLAYER_NOTAS
         self.getImage()
         self.applyGravity(obstaculos)
         self.andar(obstaculos)

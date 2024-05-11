@@ -20,16 +20,30 @@ def alterarTelaJogo(telaj):
     elif telaj == 5:
         tela = 5  
         player.alterar_tamanho(1, (733, 397))
-        obstaculos = [Obstaculo(30, 462, "Sprites/fase1/plat1.png"), Obstaculo(66, 360, "Sprites/fase1/plat1.png"),
+        obstaculos = [Obstaculo(30, 462, "Sprites/fase1/plat1.png", True), 
+                      Obstaculo(66, 360, "Sprites/fase1/plat1.png", True),
+                      Obstaculo(509, 392, "Sprites/fase1/plat1.png", True),
+                      Obstaculo(393, 289, "Sprites/fase1/plat1.png", True),
+                      Obstaculo(546, 224, "Sprites/fase1/plat1.png", True),
+                      Obstaculo(155, 304, "Sprites/fase1/plat1.png", True),
+                      Obstaculo(97, 224, "Sprites/fase1/plat1.png", True),
+                      Obstaculo(143, 122, "Sprites/fase1/plat1.png", True),
+                      Obstaculo(69, 49, "Sprites/fase1/plat1.png", True),
                       Obstaculo(672, 398, "Sprites/fase1/c12.png"),
                       Obstaculo(616, 495, "Sprites/fase1/c11.png"),
                       Obstaculo(561, 514, "Sprites/fase1/c10.png"),
                       Obstaculo(499, 544, "Sprites/fase1/c9.png"),
-                      Obstaculo(664, 151, "Sprites/fase1/c13.png", True)]
+                      Obstaculo(664, 151, "Sprites/fase1/c13.png", True),
+                      Obstaculo(0, 184, "Sprites/fase1/c8.png"),
+                      Obstaculo(0, 258, "Sprites/fase1/c7.png"),
+                      Obstaculo(0, 328, "Sprites/fase1/c6.png"),
+                      Obstaculo(536, 1, "Sprites/fase1/c16.png"),
+                      Obstaculo(457, 34, "Sprites/fase1/c15.png"),]
+                      
 
 #TAMANHO TELA
 sw = 898
-sh = 897
+sh = 600#897
 screen = pygame.display.set_mode((sw,sh))
 clock = pygame.time.Clock()
 
@@ -69,10 +83,11 @@ difi = pygame.image.load('img/tela.dificuldade.png')
 
 tela = 1
 run = True
-ti2 = pygame.USEREVENT + 2
+FASE1_TEXTO_NPC = pygame.USEREVENT + 2
 ti = pygame.USEREVENT + 1
 pygame.time.set_timer(ti, 30)
 player = Player()
+PLAYER_NOTAS = 0
 
 # OBSTACULOS
 obstaculos = []
@@ -95,19 +110,19 @@ nota = pygame.transform.scale(nota, (30, 30))
 # Quarto
 quarto = pygame.image.load('Sprites/quarto/quarto2.png')
 piano = Piano(300, 316)
-portal = Portal(600,300)
-npc = Npc(200,330)
-balao = Balao(200, 300, "Meu nome é Beethoven! (Aperte Q para interagir)", key=pygame.K_q)
+portal = Portal(100,300)
+npc = Npc(200,265)
+balao = Balao(80, 233, "Meu nome é Avô! (Aperte Q para interagir)", key=pygame.K_q)
 tocador = True
 
 # Fase 1
-fase1_bg = pygame.image.load('Sprites/fase1/fase1-fundo.png')
+fase1_bg = pygame.image.load('Sprites/fase1/ref.png')
 
 while run:
     if tela == FASE_1:
         screen.blit(fase1_bg, (0, 0))
         screen.blit(penta,(-130, -100))
-        player.draw(screen, obstaculos)
+        player.draw(screen, obstaculos, PLAYER_NOTAS)
 
         for n in obstaculos:
             n.draw(screen)
@@ -117,21 +132,14 @@ while run:
         screen.blit(penta,(-150, -100))
         piano.draw(screen, player)
         balao.draw(screen)
-        if balao.check_player(player): 
-            if balao.getContador() == 1:
-                if event.type == ti2:
-                    balao.alterar_texto("Não consegue tocar seu piano, não é?")
-            if balao.getContador() == 2:
-                if event.type == ti2:
-                    balao.alterar_texto('Alguns monstros musicais as roubaram, derrote-os, colete as 7 notas e poderá tocar seu piano novamente! ')
-            else:
-                if event.type == ti2:
-                    balao.alterar_texto("Entre pelo portal!")
-                    portal.draw(screen, player)
-        balao.addContador()
+        
         npc.draw(screen, player)
-        player.draw(screen, obstaculos)
-     
+        player.draw(screen, obstaculos, PLAYER_NOTAS)
+        if balao.getContador() == 0: portal.draw(screen, player)
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_q] and npc.rect.colliderect(player):      
+            pygame.time.set_timer(FASE1_TEXTO_NPC, 500, 1)
         
         
         if portal.cont != 0:
@@ -243,6 +251,18 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+
+        if event.type == FASE1_TEXTO_NPC:
+            if balao.getContador() < 4: balao.addContador()
+            if balao.getContador() == 1:        
+                balao.alterar_texto("Não consegue tocar seu piano, não é? [...]")
+            elif balao.getContador() == 2:
+                balao.alterar_texto('Alguns monstros musicais as roubaram [...]')
+            elif balao.getContador() == 3:
+                balao.alterar_texto('Colete as 7 notas e poderá tocar seu piano novamente! [...]')
+            elif balao.getContador() == 4:
+                balao.alterar_texto("Entre pelo portal e começe sua jornada!")
+            print("a")
 
         player.readkeys()
 
