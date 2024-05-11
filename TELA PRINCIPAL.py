@@ -6,6 +6,8 @@ from piano import Piano
 from notas import Notas
 from balao import Balao
 from portal import Portal
+from npc import Npc
+from balao import Balao
 score = 0
 
 pygame.init()
@@ -27,7 +29,7 @@ def alterarTelaJogo(telaj):
 
 #TAMANHO TELA
 sw = 898
-sh = 600#897
+sh = 897
 screen = pygame.display.set_mode((sw,sh))
 clock = pygame.time.Clock()
 
@@ -67,7 +69,7 @@ difi = pygame.image.load('img/tela.dificuldade.png')
 
 tela = 1
 run = True
-
+ti2 = pygame.USEREVENT + 2
 ti = pygame.USEREVENT + 1
 pygame.time.set_timer(ti, 30)
 player = Player()
@@ -93,7 +95,9 @@ nota = pygame.transform.scale(nota, (30, 30))
 # Quarto
 quarto = pygame.image.load('Sprites/quarto/quarto2.png')
 piano = Piano(300, 316)
-portal = Portal(200,300)
+portal = Portal(600,300)
+npc = Npc(200,330)
+balao = Balao(200, 300, "Meu nome é Beethoven! (Aperte Q para interagir)", key=pygame.K_q)
 tocador = True
 
 # Fase 1
@@ -112,8 +116,23 @@ while run:
         screen.blit(quarto, (0, 0))
         screen.blit(penta,(-150, -100))
         piano.draw(screen, player)
+        balao.draw(screen)
+        if balao.check_player(player): 
+            if balao.getContador() == 1:
+                if event.type == ti2:
+                    balao.alterar_texto("Não consegue tocar seu piano, não é?")
+            if balao.getContador() == 2:
+                if event.type == ti2:
+                    balao.alterar_texto('Alguns monstros musicais as roubaram, derrote-os, colete as 7 notas e poderá tocar seu piano novamente! ')
+            else:
+                if event.type == ti2:
+                    balao.alterar_texto("Entre pelo portal!")
+                    portal.draw(screen, player)
+        balao.addContador()
+        npc.draw(screen, player)
         player.draw(screen, obstaculos)
-        portal.draw(screen, player)
+     
+        
         
         if portal.cont != 0:
             alterarTelaJogo(5)
