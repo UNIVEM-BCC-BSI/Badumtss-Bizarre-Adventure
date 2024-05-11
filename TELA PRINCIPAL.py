@@ -123,6 +123,8 @@ while run:
         screen.blit(fase1_bg, (0, 0))
         screen.blit(penta,(-130, -100))
         player.draw(screen, obstaculos, PLAYER_NOTAS)
+        if player.rect.y > 610:
+            player.alterar_tamanho(1, (733, 397))
 
         for n in obstaculos:
             n.draw(screen)

@@ -89,7 +89,7 @@ class Player():
             if not self.em_obstaculo:
                 for pos, obstaculo in enumerate(obstaculos):
                     if self.rect.colliderect(obstaculo.rect):
-                        if self.rect.bottom >= obstaculo.rect.top: 
+                        if self.rect.bottom >= obstaculo.rect.top and self.rect.bottom < obstaculo.rect.bottom: 
                             self.rect.bottom = obstaculo.rect.top
                             self.em_obstaculo = True
                             self.obstaculo = pos
