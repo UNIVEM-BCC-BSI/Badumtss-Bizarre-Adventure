@@ -74,8 +74,8 @@ class Player():
                 self.jumping = False
                 self.em_obstaculo = False
 
-        if not self.jumping and self.size == SIZE_PEQUENO and self.gravity < 0:
-            self.gravity = 10
+        # if not self.jumping and self.size == SIZE_PEQUENO and self.gravity < 0:
+        #     self.gravity = 10
 
         # Se o jogador estiver pulando ou não estiver em contato com um obstáculo
         if self.jumping or (self.rect.midbottom[1] < CHAO and not self.em_obstaculo and self.size == SIZE_GRANDE) or (self.size == SIZE_PEQUENO and not self.em_obstaculo):
@@ -83,7 +83,7 @@ class Player():
 
             if self.anim == "jump-left" or self.anim == "left":
                 self.anim = "jump-left"
-            elif self.anim == "jump-right" or self.anim == "right":
+            elif self.anim == "jump-right" or self.anim == "right" or self.anim == "idle":
                 self.anim = "jump-right"
 
             if not self.em_obstaculo:
@@ -151,7 +151,8 @@ class Player():
             self.speed += 1
 
         elif self.speed < 2 and self.size == SIZE_PEQUENO:
-            self.speed += 1
+            if not self.jumping: self.speed += 1
+            else: self.speed += 2
 
         if self.andando == "right":
             if self.rect.right > 800:

@@ -19,26 +19,32 @@ def alterarTelaJogo(telaj):
         tela = 4
     elif telaj == 5:
         tela = 5  
-        player.alterar_tamanho(1, (733, 397))
-        obstaculos = [Obstaculo(30, 462, "Sprites/fase1/plat1.png", True), 
-                      Obstaculo(66, 360, "Sprites/fase1/plat1.png", True),
-                      Obstaculo(509, 392, "Sprites/fase1/plat1.png", True),
-                      Obstaculo(393, 289, "Sprites/fase1/plat1.png", True),
-                      Obstaculo(546, 224, "Sprites/fase1/plat1.png", True),
-                      Obstaculo(155, 304, "Sprites/fase1/plat1.png", True),
-                      Obstaculo(97, 224, "Sprites/fase1/plat1.png", True),
-                      Obstaculo(143, 122, "Sprites/fase1/plat1.png", True),
-                      Obstaculo(69, 49, "Sprites/fase1/plat1.png", True),
+        player.alterar_tamanho(1, (125, 545))
+        obstaculos = [Obstaculo(30, 462, "Sprites/fase1/plat1.png"), 
+                      Obstaculo(67, 361, "Sprites/fase1/plat1.png"),
+                      Obstaculo(509, 392, "Sprites/fase1/plat1.png"),
+                      Obstaculo(393, 289, "Sprites/fase1/plat1.png"),
+                      Obstaculo(546, 226, "Sprites/fase1/plat1.png"),
+                      Obstaculo(155, 306, "Sprites/fase1/plat1.png"),
+                      Obstaculo(96, 224, "Sprites/fase1/plat1.png"),
+                      Obstaculo(144, 123, "Sprites/fase1/plat1.png"),
+                      Obstaculo(69, 50, "Sprites/fase1/plat1.png"),
                       Obstaculo(672, 398, "Sprites/fase1/c12.png"),
                       Obstaculo(616, 495, "Sprites/fase1/c11.png"),
                       Obstaculo(561, 514, "Sprites/fase1/c10.png"),
                       Obstaculo(499, 544, "Sprites/fase1/c9.png"),
-                      Obstaculo(664, 151, "Sprites/fase1/c13.png", True),
+                      Obstaculo(664, 151, "Sprites/fase1/c13.png"),
                       Obstaculo(0, 184, "Sprites/fase1/c8.png"),
                       Obstaculo(0, 258, "Sprites/fase1/c7.png"),
                       Obstaculo(0, 328, "Sprites/fase1/c6.png"),
+                      Obstaculo(453, 38, "Sprites/fase1/c15.png"),
                       Obstaculo(536, 1, "Sprites/fase1/c16.png"),
-                      Obstaculo(457, 34, "Sprites/fase1/c15.png"),]
+                      Obstaculo(432, 38, "Sprites/fase1/c14.png"),
+                      Obstaculo(88, 544, "Sprites/fase1/c1.png"),
+                      Obstaculo(172, 435, "Sprites/fase1/c2.png"),
+                      Obstaculo(214, 330, "Sprites/fase1/c3.png"),
+                      Obstaculo(214, 258, "Sprites/fase1/c4.png"),
+                      Obstaculo(214, 43, "Sprites/fase1/c5.png")]
                       
 
 #TAMANHO TELA
@@ -116,7 +122,7 @@ balao = Balao(80, 233, "Meu nome é Avô! (Aperte Q para interagir)", key=pygame
 tocador = True
 
 # Fase 1
-fase1_bg = pygame.image.load('Sprites/fase1/ref.png')
+fase1_bg = pygame.image.load('Sprites/fase1/ref.png') # fase1-fundo
 
 while run:
     if tela == FASE_1:
@@ -124,7 +130,7 @@ while run:
         screen.blit(penta,(-130, -100))
         player.draw(screen, obstaculos, PLAYER_NOTAS)
         if player.rect.y > 610:
-            player.alterar_tamanho(1, (733, 397))
+            player.alterar_tamanho(1, (125, 545))
 
         for n in obstaculos:
             n.draw(screen)
@@ -268,9 +274,9 @@ while run:
 
         player.readkeys()
 
-    if pygame.mouse.get_pressed()[0] and tela > 4:
-        print(pygame.mouse.get_pos())
-
+    # if pygame.mouse.get_pressed()[0] and tela > 4:
+    #     print(pygame.mouse.get_pos())
+    
     pygame.display.update()
     clock.tick(60)
 
