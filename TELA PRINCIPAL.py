@@ -8,6 +8,7 @@ from balao import Balao
 from portal import Portal
 from npc import Npc
 from balao import Balao
+from tela_pergunta import Pergunta
 score = 0
 
 pygame.init()
@@ -116,13 +117,14 @@ nota = pygame.transform.scale(nota, (30, 30))
 # Quarto
 quarto = pygame.image.load('Sprites/quarto/quarto2.png')
 piano = Piano(300, 316)
-portal = Portal(100,300)
+portal = Portal(500,300)
 npc = Npc(200,265)
 balao = Balao(80, 233, "Meu nome é Avô! (Aperte Q para interagir)", key=pygame.K_q)
 tocador = True
 
 # Fase 1
 fase1_bg = pygame.image.load('Sprites/fase1/ref.png') # fase1-fundo
+teste_pergunta = Pergunta("Qual o aumentativo de dacueba?", ["Dacuebao", "Dacuebo", "Calabreso", "Dacuebinha"])
 
 while run:
     if tela == FASE_1:
@@ -140,7 +142,7 @@ while run:
         screen.blit(penta,(-150, -100))
         piano.draw(screen, player)
         balao.draw(screen)
-        
+
         npc.draw(screen, player)
         player.draw(screen, obstaculos, PLAYER_NOTAS)
         if balao.getContador() == 0: portal.draw(screen, player)
@@ -170,6 +172,7 @@ while run:
                 if score == 4:
                     si.play()
 
+        teste_pergunta.draw(screen)
         '''balao.draw(screen)
         if balao.check_player(player): 
             if balao.getContador() == 0:
