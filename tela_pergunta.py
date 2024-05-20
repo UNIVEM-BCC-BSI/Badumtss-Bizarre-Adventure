@@ -6,6 +6,7 @@ class Pergunta():
         self.pergunta = pergunta
         self.correta = opcoes[0] 
         self.opcoes = shuffle(opcoes)
+        self.pressing = False
 
         # background
         self.image = pygame.Surface((700, 500), pygame.SRCALPHA)
@@ -25,6 +26,16 @@ class Pergunta():
     def draw(self, screen):
         for btn in self.buttons:
             btn.draw(self.image)
+            if btn.click() and not self.pressing:
+                self.pressing = True
+                if btn.texto == self.correta:
+                    print("clicando certo")
+                else:
+                    print("clicando errado")
+
+            elif self.pressing and not pygame.mouse.get_pressed()[0]:
+                self.pressing = False
+
         screen.blit(self.image, self.rect)
 
 
@@ -44,9 +55,11 @@ class Botao:
         self.image.fill((0, 0, 0, 128))
         self.rect = self.image.get_rect(topleft=(x, y))
         self.hovering = False
+        self.clicking = False
 
     def draw(self, image):
         self.hover()
+        self.clicando()
         if self.hovering:
             self.image.fill((158, 158, 158, 128))
         else:
@@ -62,11 +75,14 @@ class Botao:
 
     def clicando(self):
         self.hover()
-        if pygame.mouse.get_pressed()[0] and self.hovering:
-            return True
-        else:
-            return False
+        if pygame.mouse.get_pressed()[0] and self.hovering and not self.clicking:
+            self.clicking = True
+        elif self.clicking and not pygame.mouse.get_pressed()[0]:
+            self.clicking = False
     
+    def click(self):
+        return self.clicking
+
     def hover(self):
         mp = pygame.mouse.get_pos()
         if mp[0] in self.lista_x and mp[1] in self.lista_y and not self.hovering:
