@@ -5,9 +5,11 @@ from obstaculos import Obstaculo
 from piano import Piano
 from notas import Notas
 from balao import Balao
+from balao import Balao2
 from portal import Portal
 from portal import Portal2
 from npc import Npc
+from npc import Npc2
 from balao import Balao
 from tela_pergunta import Pergunta
 score = 0
@@ -19,6 +21,12 @@ def alterarTelaJogo(telaj):
     pygame.display.set_mode((800, 600))
     if telaj == 4: 
         tela = 4
+        obstaculos =[]
+    elif telaj == 6:
+        tela = 6
+        player.alterar_tamanho(0, (80, 530))
+        obstaculos =[]
+
     elif telaj == 5:
         tela = 5  
         player.alterar_tamanho(1, (125, 545))
@@ -125,8 +133,10 @@ quarto = pygame.image.load('Sprites/quarto/quarto2.png')
 piano = Piano(300, 316)
 portal = Portal(500,300)
 portal2 = Portal2(757,342)
+npc2 = Npc2(150,265)
 npc = Npc(200,265)
 balao = Balao(80, 233, "Meu nome é Avô! (Aperte Q para interagir)", key=pygame.K_q)
+balao2 = Balao2(60, 233, "Agora que recuperou as notas, toque seu piano!", key=pygame.K_q)
 tocador = True
 
 # CONTADOR PERGUNTASA
@@ -137,6 +147,19 @@ fase1_bg = pygame.image.load('Sprites/fase1/ref.png') # fase1-fundo
 teste_pergunta = Pergunta(CONT_PERGUNTA, ["MI", "SOL", "LA", "DÓ"])
 
 while run:
+    if tela == 6:
+        screen.blit(quarto, (0, 0))
+        piano.draw(screen, player)
+        balao2.draw(screen)
+
+        npc2.draw(screen, player)
+        player.draw(screen, obstaculos, 7)
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_q] and npc2.rect.colliderect(player):  
+            pygame.time.set_timer(FASE1_TEXTO_NPC, 500, 1)
+        
+
     if tela == FASE_1:
         screen.blit(fase1_bg, (0, 0))
         player.draw(screen, obstaculos, PLAYER_NOTAS)
@@ -154,7 +177,7 @@ while run:
         if score == 12:
             portal2.draw(screen, player)
         if portal2.cont != 0:
-            alterarTelaJogo(4)
+            alterarTelaJogo(6)
 
 
     if tela == 4:
@@ -223,10 +246,10 @@ while run:
             if event.type == ti:
                 tela = 2
         if bot.cc():
-
+            pygame.mixer.music.pause()
             mb.play()
             if event.type == ti:
-               tela = 4
+               alterarTelaJogo(4)
         if bot3.cc():
 
             mb.play()
