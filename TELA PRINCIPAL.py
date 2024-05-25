@@ -6,6 +6,7 @@ from piano import Piano
 from notas import Notas
 from balao import Balao
 from portal import Portal
+from portal import Portal2
 from npc import Npc
 from balao import Balao
 from tela_pergunta import Pergunta
@@ -24,7 +25,9 @@ def alterarTelaJogo(telaj):
         obstaculos = [Obstaculo(30, 462, "Sprites/fase1/plat1.png"), 
                       Obstaculo(67, 361, "Sprites/fase1/plat1.png"),
                       Obstaculo(509, 392, "Sprites/fase1/plat1.png"),
-                      Obstaculo(393, 289, "Sprites/fase1/plat1.png"),
+                      Obstaculo(393, 91, "Sprites/fase1/plat1.png"),
+                      Obstaculo(392, 289, "Sprites/fase1/plat1.png"),
+                      Obstaculo(781, 228, "Sprites/fase1/plat1.png"),
                       Obstaculo(546, 226, "Sprites/fase1/plat1.png"),
                       Obstaculo(155, 306, "Sprites/fase1/plat1.png"),
                       Obstaculo(96, 224, "Sprites/fase1/plat1.png"),
@@ -99,56 +102,72 @@ PLAYER_NOTAS = 0
 # OBSTACULOS
 obstaculos = []
 
-notas = []
-'''[Notas(600,450,20,20),
-         Notas(500,450,20,20),
-         Notas(400,450,20,20),
-         Notas(300,450,20,20)
-         ]'''
-#PENTAGRAMA
-penta = pygame.image.load('img/penta2.png')
-penta = pygame.transform.scale(penta, (500, 300))
-nota = pygame.image.load('img/minima.png')
-nota = pygame.transform.scale(nota, (30, 30))
+notas = [Notas(181,403,20,20),
+         Notas(169,275,20,20),
+         Notas(19,153,20,20),
+         Notas(81,19,20,20),
+         Notas(265,12,20,20),
+         Notas(504,8,20,20),
+         Notas(404,257,20,20),
+         Notas(559,194,20,20),
+         Notas(695,119,20,20),
+         Notas(522,360,20,20),
+         Notas(516,511,20,20),
+         Notas(639,462,20,20)
+         ]
 
-# Balão de texto
-# balao = Balao(400, 400, "Texto", key=pygame.K_q)
+#PENTAGRAMA
+nota = pygame.image.load('imgs_part/notas_a_pegar.png')
+nota = pygame.transform.scale(nota, (30, 30))
 
 # Quarto
 quarto = pygame.image.load('Sprites/quarto/quarto2.png')
 piano = Piano(300, 316)
 portal = Portal(500,300)
+portal2 = Portal2(757,342)
 npc = Npc(200,265)
 balao = Balao(80, 233, "Meu nome é Avô! (Aperte Q para interagir)", key=pygame.K_q)
 tocador = True
 
+# CONTADOR PERGUNTASA
+CONT_PERGUNTA = 0
+
 # Fase 1
 fase1_bg = pygame.image.load('Sprites/fase1/ref.png') # fase1-fundo
-teste_pergunta = Pergunta("Qual o aumentativo de dacueba?", ["Dacuebao", "Dacuebo", "Calabreso", "Dacuebinha"])
+teste_pergunta = Pergunta(CONT_PERGUNTA, ["MI", "SOL", "LA", "DÓ"])
 
 while run:
     if tela == FASE_1:
         screen.blit(fase1_bg, (0, 0))
-        screen.blit(penta,(-130, -100))
         player.draw(screen, obstaculos, PLAYER_NOTAS)
         if player.rect.y > 610:
             player.alterar_tamanho(1, (125, 545))
 
         for n in obstaculos:
             n.draw(screen)
+        for n in notas:
+            n.draw(screen)           
+            if n.colisao(player):
+                notas.remove(n)
+                score+=1
+                print(score)
+        if score == 12:
+            portal2.draw(screen, player)
+        if portal2.cont != 0:
+            alterarTelaJogo(4)
+
 
     if tela == 4:
         screen.blit(quarto, (0, 0))
-        screen.blit(penta,(-150, -100))
         piano.draw(screen, player)
         balao.draw(screen)
 
         npc.draw(screen, player)
         player.draw(screen, obstaculos, PLAYER_NOTAS)
-        if balao.getContador() == 0: portal.draw(screen, player)
+        if balao.getContador() == 4: portal.draw(screen, player)
 
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_q] and npc.rect.colliderect(player):      
+        if keys[pygame.K_q] and npc.rect.colliderect(player):  
             pygame.time.set_timer(FASE1_TEXTO_NPC, 500, 1)
         
         
@@ -157,45 +176,8 @@ while run:
         for n in obstaculos:
             n.draw(screen)
 
-        for n in notas:
-            n.draw(screen)           
-            if n.colisao(player):
-                notas.remove(n)
-                score+=1
-                print(score)
-                if score == 1:
-                    sol.play()
-                if score == 2:
-                    si.play()
-                if score == 3:
-                    re.play()
-                if score == 4:
-                    si.play()
 
-        teste_pergunta.draw(screen)
-        '''balao.draw(screen)
-        if balao.check_player(player): 
-            if balao.getContador() == 0:
-                print("Playerasjalsja")
-            else:
-                balao.alterar_texto("obaaaaaaaaa")
-            balao.addContador()''' 
-            
-        if score == 1:
-            screen.blit(nota, (60,90))
-        if score == 2:
-            screen.blit(nota, (60,90))
-            screen.blit(nota, (90,75))
-        if score == 3:
-            screen.blit(nota, (60,90))
-            screen.blit(nota, (90,75))
-            screen.blit(nota, (120,60))
-        if score == 4:
-            screen.blit(nota, (60,90))
-            screen.blit(nota, (90,75))
-            screen.blit(nota, (120,60))
-            screen.blit(nota, (150,75))
-
+        #teste_pergunta.draw(screen)
     if tela == 3:
         screen.blit(difi,(-2,-2))
         dificil = Bott('img/dificil.png','img/dificil.click.png',285,700,True, screen)
@@ -244,7 +226,7 @@ while run:
 
             mb.play()
             if event.type == ti:
-               tela = 3
+               tela = 4
         if bot3.cc():
 
             mb.play()
@@ -268,17 +250,16 @@ while run:
             if balao.getContador() == 1:        
                 balao.alterar_texto("Não consegue tocar seu piano, não é? [...]")
             elif balao.getContador() == 2:
-                balao.alterar_texto('Alguns monstros musicais as roubaram [...]')
+                balao.alterar_texto('Algumas notas de sua partitura fugiram [...]')
             elif balao.getContador() == 3:
-                balao.alterar_texto('Colete as 7 notas e poderá tocar seu piano novamente! [...]')
+                balao.alterar_texto('Colete as notas e poderá tocar seu piano novamente! [...]')
             elif balao.getContador() == 4:
                 balao.alterar_texto("Entre pelo portal e começe sua jornada!")
-            print("a")
 
         player.readkeys()
 
-    # if pygame.mouse.get_pressed()[0] and tela > 4:
-    #     print(pygame.mouse.get_pos())
+    if pygame.mouse.get_pressed()[0] and tela > 4:
+        print(pygame.mouse.get_pos())
     
     pygame.display.update()
     clock.tick(60)

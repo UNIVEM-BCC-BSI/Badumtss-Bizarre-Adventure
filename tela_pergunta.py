@@ -1,21 +1,28 @@
 import pygame
 from random import shuffle
 
+
+
 class Pergunta():
-    def __init__(self, pergunta:str="pergunta", opcoes:list=["none"]*4):
-        self.pergunta = pergunta
+    def __init__(self, cont:int=0, opcoes:list=["no"]*4):
+        self.pergunta = cont
         self.correta = opcoes[0] 
         self.opcoes = shuffle(opcoes)
         self.pressing = False
-
+        
         # background
         self.image = pygame.Surface((700, 500), pygame.SRCALPHA)
         self.image.fill((0, 0, 0, 230))
 
         # texto
         fonte = pygame.font.Font(None, 35)
-        text_surface = fonte.render(self.pergunta, True, "white")
-        self.image.blit(text_surface, (20, 20))
+        text_surface = fonte.render("O que essa figura representa?", True, "white")
+        self.image.blit(text_surface, (180, 10))
+
+        # perguntas
+        img = pygame.image.load(f"imgs_part/partitura_{cont+1}.png").convert_alpha()
+        img = pygame.transform.scale(img, (300, 250))
+        self.image.blit(img, (200, 40))
 
         self.buttons = [Botao(opcoes[0], 100, 300), Botao(opcoes[1], 400, 300),
                         Botao(opcoes[2], 100, 400), Botao(opcoes[3], 400, 400)]
@@ -68,7 +75,7 @@ class Botao:
         # texto
         fonte = pygame.font.Font(None, 25)
         text_surface = fonte.render(self.texto, True, "white")
-        self.image.blit(text_surface, (5, 5))
+        self.image.blit(text_surface, (20, 10))
         # self.rect = self.image.get_rect(topleft=(self.x, self.y))
 
         image.blit(self.image, self.rect)
