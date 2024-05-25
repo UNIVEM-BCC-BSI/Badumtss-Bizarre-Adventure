@@ -9,7 +9,7 @@ class Notas():
         self.x = x
         self.altura = altura
         self.largura = largura
-        self.image = pygame.image.load('img/minima.png')
+        self.image = pygame.image.load('imgs_part/notas_a_pegar.png')
         self.image = pygame.transform.scale(self.image,(30,30))
         self.rect = self.image.get_rect(topleft=(x, y))
 
