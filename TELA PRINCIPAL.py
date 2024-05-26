@@ -1,27 +1,28 @@
 import pygame
+from random import choice
 from player import Player
 from botoes import Bott
 from obstaculos import Obstaculo
 from piano import Piano
 from notas import Notas
-from balao import Balao
-from balao import Balao2
-from portal import Portal
-from portal import Portal2
-from npc import Npc
-from npc import Npc2
-from balao import Balao
+from balao import Balao, Balao2, Velho
+from portal import Portal, Portal2
+from npc import Npc, Npc2
 from tela_pergunta import Pergunta
 score = 0
 
 pygame.init()
 
 def alterarTelaJogo(telaj):
-    global screen, tela, obstaculos, player
+    global screen, tela, obstaculos, player, VIDA
     pygame.display.set_mode((800, 600))
+    if telaj == 1:
+        tela = 1
+    
     if telaj == 4: 
         tela = 4
-        obstaculos =[]
+        GerarFase()
+
     elif telaj == 6:
         tela = 6
         player.alterar_tamanho(0, (80, 530))
@@ -57,7 +58,30 @@ def alterarTelaJogo(telaj):
                       Obstaculo(214, 330, "Sprites/fase1/c3.png"),
                       Obstaculo(214, 258, "Sprites/fase1/c4.png"),
                       Obstaculo(214, 43, "Sprites/fase1/c5.png")]
-                      
+
+def GerarFase():
+    global notas, player, PLAYER_NOTAS, VIDA, NOTA_INDEX, obstaculos, MORTO, balao, portal, score
+    notas = [Notas(181,403,20,20),
+         Notas(169,275,20,20),
+         Notas(19,153,20,20),
+         Notas(81,19,20,20),
+         Notas(265,12,20,20),
+         Notas(504,8,20,20),
+         Notas(404,257,20,20),
+         Notas(559,194,20,20),
+         Notas(695,119,20,20),
+         Notas(522,360,20,20),
+         Notas(516,511,20,20),
+         Notas(639,462,20,20)]
+    obstaculos = []
+    player = Player()
+    PLAYER_NOTAS = 0
+    VIDA = 4
+    NOTA_INDEX = 0
+    MORTO = -1
+    portal.cont = 0
+    score = 11
+    balao = Balao(80, 233, "Meu nome é Avô! (Aperte Q para interagir)", key=pygame.K_q)
 
 #TAMANHO TELA
 sw = 898
@@ -67,6 +91,19 @@ clock = pygame.time.Clock()
 
 # FASES
 FASE_1 = 5
+
+# Vida
+VIDA_IMAGENS = [
+    pygame.image.load("Sprites/vida/vida_0.png").convert_alpha(),
+    pygame.image.load("Sprites/vida/vida_1.png").convert_alpha(),
+    pygame.image.load("Sprites/vida/vida_2.png").convert_alpha(),
+    pygame.image.load("Sprites/vida/vida_3.png").convert_alpha(),
+    pygame.image.load("Sprites/vida/vida_4.png").convert_alpha()
+]
+def renderizarVida(screen):
+    global VIDA
+    VIDA_IMG = VIDA_IMAGENS[VIDA]
+    screen.blit(VIDA_IMG, (700, 10))
 
 #ICONE
 icon = pygame.image.load('Sprites/Badumtss/jump.png')
@@ -101,28 +138,18 @@ difi = pygame.image.load('img/tela.dificuldade.png')
 
 tela = 1
 run = True
-FASE1_TEXTO_NPC = pygame.USEREVENT + 2
+
+# EVENTOS
 ti = pygame.USEREVENT + 1
+FASE1_TEXTO_NPC = pygame.USEREVENT + 2
+CLICK_CORRETO_PERGUNTA = pygame.USEREVENT + 3
+TIMER_MORTO = pygame.USEREVENT + 4
+TIMER_OCULTAR_VELHO = pygame.USEREVENT + 5
+
 pygame.time.set_timer(ti, 30)
-player = Player()
-PLAYER_NOTAS = 0
 
 # OBSTACULOS
 obstaculos = []
-
-notas = [Notas(181,403,20,20),
-         Notas(169,275,20,20),
-         Notas(19,153,20,20),
-         Notas(81,19,20,20),
-         Notas(265,12,20,20),
-         Notas(504,8,20,20),
-         Notas(404,257,20,20),
-         Notas(559,194,20,20),
-         Notas(695,119,20,20),
-         Notas(522,360,20,20),
-         Notas(516,511,20,20),
-         Notas(639,462,20,20)
-         ]
 
 #PENTAGRAMA
 nota = pygame.image.load('imgs_part/notas_a_pegar.png')
@@ -131,20 +158,22 @@ nota = pygame.transform.scale(nota, (30, 30))
 # Quarto
 quarto = pygame.image.load('Sprites/quarto/quarto2.png')
 piano = Piano(300, 316)
-portal = Portal(500,300)
-portal2 = Portal2(757,342)
-npc2 = Npc2(150,265)
-npc = Npc(200,265)
+portal = Portal(500, 300)
+portal2 = Portal2(757, 340)
+npc2 = Npc2(150, 265)
+npc = Npc(200, 265)
 balao = Balao(80, 233, "Meu nome é Avô! (Aperte Q para interagir)", key=pygame.K_q)
 balao2 = Balao2(60, 233, "Agora que recuperou as notas, toque seu piano!", key=pygame.K_q)
-tocador = True
-
-# CONTADOR PERGUNTASA
-CONT_PERGUNTA = 0
 
 # Fase 1
+GerarFase()
 fase1_bg = pygame.image.load('Sprites/fase1/ref.png') # fase1-fundo
-teste_pergunta = Pergunta(CONT_PERGUNTA, ["MI", "SOL", "LA", "DÓ"])
+NOTAS_CORRETAS = ["mi", "re#", "mi", "re#", "mi", "si", "re", "do", "la", "do", "mi", "la", "re", "mi", "sol#", "si", "do"]
+NOTAS_POSSIVEIS = ["do", "re", "mi", "fa", "sol", "la", "si", "do", "re#", "mi#", "fa#", "do#", "sol#", "la#"]
+PERGUNTA = Pergunta()
+pergunta_mostrando = False
+pode_mover = True
+velho = Velho("Você recuperou todas as notas. Volte para o portal.")
 
 while run:
     if tela == 6:
@@ -162,23 +191,60 @@ while run:
 
     if tela == FASE_1:
         screen.blit(fase1_bg, (0, 0))
-        player.draw(screen, obstaculos, PLAYER_NOTAS)
+        player.draw(screen, obstaculos, PLAYER_NOTAS, pode_mover, VIDA)
         if player.rect.y > 610:
             player.alterar_tamanho(1, (125, 545))
 
+        # Morto
+        if VIDA == 0 and MORTO == -1:
+            MORTO = 5
+            pygame.time.set_timer(TIMER_MORTO, 1000, 5)
+
+        # Renderização obstaculos
         for n in obstaculos:
             n.draw(screen)
+
+        # Renderização notas
         for n in notas:
-            n.draw(screen)           
+            n.draw(screen)      
+            # Colidir com nota     
             if n.colisao(player):
                 notas.remove(n)
-                score+=1
-                print(score)
-        if score == 12:
+                lista = [NOTAS_CORRETAS[NOTA_INDEX]]
+                while len(lista) < 4:
+                    nota = choice(NOTAS_POSSIVEIS)
+                    if nota not in lista:
+                        lista.append(nota)
+
+                PERGUNTA = Pergunta(score, lista)
+                pergunta_mostrando = True
+                pode_mover = False
+
+        # Portal
+        if score >= 12:
             portal2.draw(screen, player)
+        
         if portal2.cont != 0:
             alterarTelaJogo(6)
 
+        if pergunta_mostrando:
+            PERGUNTA.draw(screen)
+
+        if MORTO > 0:
+            TELA_MORREU = pygame.Surface((800, 600), pygame.SRCALPHA)
+            TELA_MORREU.fill((0, 0, 0, 190))
+            fonte = pygame.font.Font(None, 45)
+
+            txt = fonte.render("MORTO... CONTINUANDO EM", True, "red")
+            TELA_MORREU.blit(txt, (400 - txt.get_width() / 2, 200))
+
+            fonte = pygame.font.Font(None, 60)
+            txt = fonte.render(f"{MORTO}", True, "white")
+            TELA_MORREU.blit(txt, (400 - txt.get_width() / 2, 250))
+            screen.blit(TELA_MORREU, (0,0))
+
+        renderizarVida(screen)
+        velho.draw(screen)
 
     if tela == 4:
         screen.blit(quarto, (0, 0))
@@ -193,14 +259,13 @@ while run:
         if keys[pygame.K_q] and npc.rect.colliderect(player):  
             pygame.time.set_timer(FASE1_TEXTO_NPC, 500, 1)
         
-        
         if portal.cont != 0:
             alterarTelaJogo(5)
+
         for n in obstaculos:
             n.draw(screen)
+        
 
-
-        #teste_pergunta.draw(screen)
     if tela == 3:
         screen.blit(difi,(-2,-2))
         dificil = Bott('img/dificil.png','img/dificil.click.png',285,700,True, screen)
@@ -279,10 +344,33 @@ while run:
             elif balao.getContador() == 4:
                 balao.alterar_texto("Entre pelo portal e começe sua jornada!")
 
+        if event.type == CLICK_CORRETO_PERGUNTA:
+            if PERGUNTA.ClicouCorreto:
+                score += 1
+            else:
+                VIDA -= 1
+            
+            NOTA_INDEX += 1
+            pergunta_mostrando = False
+            pode_mover = True
+
+            if score == 12:
+                velho.mostrar("Você recuperou todas as notas. Volte para o portal.")
+                pode_mover = False  
+
+        if event.type == TIMER_MORTO:
+            MORTO -= 1
+            if MORTO == 0:
+                alterarTelaJogo(1)
+
+        if event.type == TIMER_OCULTAR_VELHO:
+            velho.ocultar()
+            pode_mover = True
+
         player.readkeys()
 
-    if pygame.mouse.get_pressed()[0] and tela > 4:
-        print(pygame.mouse.get_pos())
+    # if pygame.mouse.get_pressed()[0] and tela > 4:
+    #     print(pygame.mouse.get_pos())
     
     pygame.display.update()
     clock.tick(60)

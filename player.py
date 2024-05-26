@@ -13,6 +13,7 @@ JUMP_INDEX = 1
 IDLE_INDEX = 0
 RUN_INDEX = 2
 PIANO_P_INDEX = 3
+MORTO_INDEX = 3
 
 SIZE_GRANDE = 0
 SIZE_PEQUENO = 1
@@ -44,7 +45,8 @@ class Player():
                         pygame.image.load('Sprites/Badumtss-menor/jump.png').convert_alpha(), # pulo 
                         [pygame.image.load('Sprites/Badumtss-menor/run/run_1.png').convert_alpha(), # andar
                          pygame.image.load('Sprites/Badumtss-menor/run/run_2.png').convert_alpha(), # andar
-                         pygame.image.load('Sprites/Badumtss-menor/run/run_3.png').convert_alpha()]]] 
+                         pygame.image.load('Sprites/Badumtss-menor/run/run_3.png').convert_alpha()],
+                        pygame.image.load('Sprites/Badumtss-menor/dead.png').convert_alpha()]] 
 
         self.image = self.images[SIZE_GRANDE][IDLE_INDEX][0]
         self.rect = self.image.get_rect(midbottom=(80, CHAO))
@@ -61,6 +63,7 @@ class Player():
         self.obstaculo = 0
         self.em_obstaculo = False
         self.notas = 0
+        self.pode_mover = False
 
     def applyGravity(self, obstaculos):
         # Mantem o valor da gravidade no padrão: 20
@@ -115,31 +118,34 @@ class Player():
 
 
     def getImage(self):
-        if self.anim == "idle":
-            self.anim_index += 0.1
-            if self.anim_index > 5: self.anim_index = 0
-            self.image = self.images[self.size][IDLE_INDEX][floor(self.anim_index)]
+        if self.vida > 0:
+            if self.anim == "idle":
+                self.anim_index += 0.1
+                if self.anim_index > 5: self.anim_index = 0
+                self.image = self.images[self.size][IDLE_INDEX][floor(self.anim_index)]
 
-        elif self.anim == "piano-play":
-            self.anim_index += 0.1
-            if self.anim_index > 3: self.anim_index = 0
-            self.image = self.images[self.size][PIANO_P_INDEX][floor(self.anim_index)]
+            elif self.anim == "piano-play":
+                self.anim_index += 0.1
+                if self.anim_index > 3: self.anim_index = 0
+                self.image = self.images[self.size][PIANO_P_INDEX][floor(self.anim_index)]
 
-        elif self.anim == "left":
-            self.anim_index += 0.1
-            if self.anim_index > 2: self.anim_index = 0
-            self.image = pygame.transform.flip(self.images[self.size][RUN_INDEX][floor(self.anim_index)], True, False)
+            elif self.anim == "left":
+                self.anim_index += 0.1
+                if self.anim_index > 2: self.anim_index = 0
+                self.image = pygame.transform.flip(self.images[self.size][RUN_INDEX][floor(self.anim_index)], True, False)
 
-        elif self.anim == "right":
-            self.anim_index += 0.1
-            if self.anim_index > 2: self.anim_index = 0
-            self.image = self.images[self.size][RUN_INDEX][floor(self.anim_index)]
+            elif self.anim == "right":
+                self.anim_index += 0.1
+                if self.anim_index > 2: self.anim_index = 0
+                self.image = self.images[self.size][RUN_INDEX][floor(self.anim_index)]
 
-        elif self.anim == "jump-right":
-            self.image = self.images[self.size][JUMP_INDEX]
+            elif self.anim == "jump-right":
+                self.image = self.images[self.size][JUMP_INDEX]
 
-        elif self.anim == "jump-left":
-            self.image = pygame.transform.flip(self.images[self.size][JUMP_INDEX], True, False)
+            elif self.anim == "jump-left":
+                self.image = pygame.transform.flip(self.images[self.size][JUMP_INDEX], True, False)
+        else:
+            self.image = self.images[self.size][MORTO_INDEX]
 
         self.rect = self.image.get_rect(x=self.rect.x, y=self.rect.y)
 
@@ -168,22 +174,22 @@ class Player():
 
     def readkeys(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_SPACE]:
+        if keys[pygame.K_SPACE] and self.pode_mover:
             if not self.jumping:
                 self.gravity = -20
                 self.jumping = True
                 self.em_obstaculo = False
                 pulo.play()
 
-        if keys[pygame.K_a]:
+        if keys[pygame.K_a] and self.pode_mover:
             if not self.jumping: self.anim = "left"
             self.andando = "left"
 
-        if keys[pygame.K_d]:
+        if keys[pygame.K_d] and self.pode_mover:
             if not self.jumping: self.anim = "right"
             self.andando = "right"
 
-        if keys[pygame.K_e]:
+        if keys[pygame.K_e] and self.pode_mover:
             if not self.jumping and self.anim != "piano-play" and (self.rect.left > 230 and self.rect.right < 580) and self.notas == 7:
                 self.anim = "piano-play"
                 self.andando = "idle"
@@ -200,7 +206,13 @@ class Player():
         self.andando = "idle"
         self.anim = "idle"
 
-    def draw(self, screen, obstaculos, PLAYER_NOTAS):
+    def draw(self, screen, obstaculos, PLAYER_NOTAS, pode_mover=True, vida=4):
+        if not pode_mover or vida == 0:
+            self.pode_mover = False
+        else:
+            self.pode_mover = True
+        print(self.pode_mover, vida)
+        self.vida = vida
         self.notas = PLAYER_NOTAS
         self.getImage()
         self.applyGravity(obstaculos)

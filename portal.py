@@ -23,6 +23,7 @@ class Portal():
         self.anim = "idle"
         self.tocando = False
 
+
     def draw(self, screen, player):
         self.cont = 0
         if self.rect.colliderect(player.rect):

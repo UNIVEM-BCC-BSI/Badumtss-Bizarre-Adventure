@@ -1,14 +1,13 @@
 import pygame
 from random import shuffle
 
-
-
 class Pergunta():
     def __init__(self, cont:int=0, opcoes:list=["no"]*4):
         self.pergunta = cont
         self.correta = opcoes[0] 
         self.opcoes = shuffle(opcoes)
         self.pressing = False
+        self.ClicouCorreto = False
         
         # background
         self.image = pygame.Surface((700, 500), pygame.SRCALPHA)
@@ -35,10 +34,13 @@ class Pergunta():
             btn.draw(self.image)
             if btn.click() and not self.pressing:
                 self.pressing = True
+                EVENTO = pygame.event.Event(pygame.USEREVENT + 3)
+                pygame.event.post(EVENTO)
+                
                 if btn.texto == self.correta:
-                    print("clicando certo")
+                    self.ClicouCorreto = True
                 else:
-                    print("clicando errado")
+                    self.ClicouCorreto = False
 
             elif self.pressing and not pygame.mouse.get_pressed()[0]:
                 self.pressing = False
@@ -64,7 +66,7 @@ class Botao:
         self.hovering = False
         self.clicking = False
 
-    def draw(self, image):
+    def draw(self, screen):
         self.hover()
         self.clicando()
         if self.hovering:
@@ -74,11 +76,11 @@ class Botao:
         
         # texto
         fonte = pygame.font.Font(None, 25)
-        text_surface = fonte.render(self.texto, True, "white")
+        text_surface = fonte.render(self.texto.upper(), True, "white")
         self.image.blit(text_surface, (20, 10))
         # self.rect = self.image.get_rect(topleft=(self.x, self.y))
 
-        image.blit(self.image, self.rect)
+        screen.blit(self.image, self.rect)
 
     def clicando(self):
         self.hover()

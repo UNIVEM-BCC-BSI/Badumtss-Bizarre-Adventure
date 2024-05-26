@@ -1,4 +1,5 @@
 import pygame
+from math import floor
 
 class Balao():
     def __init__(self, x, y, text, enabled=True, key=pygame.K_e, antialias=True, color="white", bg=(0, 0, 0, 128)):
@@ -45,6 +46,9 @@ class Balao():
     
     def getContador(self):
         return self.contador
+
+    def resetContador(self):
+        self.contador = 0
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
@@ -98,3 +102,47 @@ class Balao2():
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
+
+class Velho():
+    def __init__(self, texto):
+        self.index = 0
+        self.images = [
+            pygame.image.load("Sprites/avo_fala/avofala_1.png").convert_alpha(),
+            pygame.image.load("Sprites/avo_fala/avofala_2.png").convert_alpha(),
+            pygame.image.load("Sprites/avo_fala/avofala_3.png").convert_alpha(),
+            pygame.image.load("Sprites/avo_fala/avofala_4.png").convert_alpha(),
+            pygame.image.load("Sprites/avo_fala/avofala_5.png").convert_alpha(),
+            pygame.image.load("Sprites/avo_fala/avofala_6.png").convert_alpha(),
+            pygame.image.load("Sprites/avo_fala/avofala_7.png").convert_alpha()
+        ]
+        self.image = self.images[0]
+        self.show = False
+        self.ocultando = False
+        
+        self.drawText(texto)
+    
+    def drawText(self, texto):
+        fonte = pygame.font.Font(None, 30)
+        self.text = fonte.render(texto, True, "black")
+        self.texto = self.text.get_rect(topleft=(50, 415))
+
+    def mostrar(self, text):
+        self.drawText(text)
+        if not self.ocultando:
+            self.ocultando = True
+            self.show = True
+            EVENTO = pygame.USEREVENT + 5
+            pygame.time.set_timer(EVENTO, 4000, 1)
+    
+    def ocultar(self):
+        self.show = False
+
+    def draw(self, screen):
+        if self.show:
+            self.image = self.images[floor(self.index)]
+            if self.index < 6.0: 
+                self.index += 0.1
+            else:
+                self.image.blit(self.text, self.texto)
+
+            screen.blit(self.image, (400 - self.image.get_width() // 2, 600 - self.image.get_height()))
