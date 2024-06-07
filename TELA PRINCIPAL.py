@@ -80,7 +80,7 @@ def GerarFase():
     NOTA_INDEX = 0
     MORTO = -1
     portal.cont = 0
-    score = 11
+    score = 0
     balao = Balao(80, 233, "Meu nome é Avô! (Aperte Q para interagir)", key=pygame.K_q)
 
 #TAMANHO TELA
@@ -216,12 +216,12 @@ while run:
                     if nota not in lista:
                         lista.append(nota)
 
-                PERGUNTA = Pergunta(score, lista)
+                PERGUNTA = Pergunta(NOTA_INDEX, lista)
                 pergunta_mostrando = True
                 pode_mover = False
 
         # Portal
-        if score >= 12:
+        if NOTA_INDEX >= 12:
             portal2.draw(screen, player)
         
         if portal2.cont != 0:
@@ -354,8 +354,8 @@ while run:
             pergunta_mostrando = False
             pode_mover = True
 
-            if score == 12:
-                velho.mostrar("Você recuperou todas as notas. Volte para o portal.")
+            if NOTA_INDEX == 12:
+                velho.mostrar("Você recuperou as notas. Volte para o portal.")
                 pode_mover = False  
 
         if event.type == TIMER_MORTO:

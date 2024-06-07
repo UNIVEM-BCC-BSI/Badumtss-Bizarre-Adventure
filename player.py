@@ -211,7 +211,7 @@ class Player():
             self.pode_mover = False
         else:
             self.pode_mover = True
-        print(self.pode_mover, vida)
+        
         self.vida = vida
         self.notas = PLAYER_NOTAS
         self.getImage()
